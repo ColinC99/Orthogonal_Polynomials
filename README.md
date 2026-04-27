@@ -47,6 +47,8 @@ $$P_n(x) = x^n - \sum_{k=0}^{n-1} \frac{\langle x^n,P_k \rangle}{\langle P_k,P_k
 Depending on the choice of $a, b, \sigma$ we generate a different set of orthogonal polynomials.
 This program uses this exact recursive formula to generate orthogonal polynomial bases using any choice of $a$, $b$, and $\sigma$. 
 
+Because this program utilizes sympy's symbolic representations, it calculates the orthogonal polynomials exactly. As such, it can take an immmensely long time, especially for complicated choice of weight function ($\sigma$). This is bypassed to some extent by the use of caching orthogonal polynomial bases once they have been calculated, for all historical cases this has been done already. If you want to use a complicated custom $\sigma$ then take heart that you will only need to wait a long time once for then it will be stored for future usage.
+
 When selecting a historical orthogonal polynomial basis, keep in mind that this program only calculates and displays the un-normalized version of these orthogonal polynomials. 
 This is because the historical bases often use their own unique normaliztion method and I wanted to keep things very general. 
 
