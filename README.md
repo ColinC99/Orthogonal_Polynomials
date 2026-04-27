@@ -2,7 +2,7 @@
 
 This is a simple GUI application which allows for visualizing different orthogonal polynomial bases as well as the approximation of any function that can be represented by a sympy expression in the basis of any of these orthogonal bases.
 It uses matplotlib to render a 2D graph displaying the selected option. It also includes the ability to customize the x and y limits of the graph. 
-The process for approximating functions using orthogonal polynomials is very similar to Fourier series approximation, except using a polynomial basis ($\{1, x, x^2, x^3, \dots\}$) rather than a trigonometric one (\dots, e^{-i2x}, e^{-ix}, 1, e^{ix}, e^{i2x}, \dots).
+The process for approximating functions using orthogonal polynomials is very similar to Fourier series approximation, except using a polynomial basis ($\{1, x, x^2, x^3, \dots\}$) rather than a trigonometric one ($\dots, e^{-i2x}, e^{-ix}, 1, e^{ix}, e^{i2x}, \dots$).
 
 ## Mathematical Background
 
