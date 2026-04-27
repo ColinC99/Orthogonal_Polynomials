@@ -46,14 +46,15 @@ $$P_n(x) = x^n - \sum_{k=0}^{n-1} \frac{\langle x^n,P_k \rangle}{\langle P_k,P_k
 
 Depending on the choice of $a, b, \sigma$ we generate a different set of orthogonal polynomials.
 This program uses this exact recursive formula to generate orthogonal polynomial bases using any choice of $a$, $b$, and $\sigma$. 
-When selecting a historical orthogonal polynomial basis, keep in mind that this program only displays the un-normalized version of these orthogonal polynomials. 
+
+When selecting a historical orthogonal polynomial basis, keep in mind that this program only calculates and displays the un-normalized version of these orthogonal polynomials. 
 This is because the historical bases often use their own unique normaliztion method and I wanted to keep things very general. 
-Furthermore, the only thing affected by not normalizing the basis is the way the polynomials look when they are themselves looked at. 
-Approximation will be exactly identical to the approximation using the normalized basis vectors.
 
 ## Function Approximation
 Once we have our orthogonal basis, we can approximate any target function $f(x)$ by calculating a coefficient $c_k$ for each polynomial:
 
 $$f(x) \approx \sum_{k=0}^{n} c_k P_k(x) \quad \text{where} \quad c_k = \frac{\langle f,P_k \rangle}{\langle P_k,P_k \rangle}$$
 
-This program calculates each coefficient (although using a numnerical approximation for greater efficiency) and then approximates the function using the above sum to the $n$ selected using the slider in the GUI. 
+This program calculates each coefficient (although using a numerical approximation for greater efficiency) and then approximates the function using the above sum to the $n$ selected using the slider in the GUI.
+
+Also it is important to note that the approximation using the un-normalized version of the historical orthogonal bases will be exactly identical to the approximation using the normalized version.
