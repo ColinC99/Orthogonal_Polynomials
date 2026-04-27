@@ -60,3 +60,6 @@ $$f(x) \approx \sum_{k=0}^{n} c_k P_k(x) \quad \text{where} \quad c_k = \frac{\l
 This program calculates each coefficient (although using a numerical approximation for greater efficiency) and then approximates the function using the above sum to the $n$ selected using the slider in the GUI.
 
 Also it is important to note that the approximation using the un-normalized version of the historical orthogonal bases will be exactly identical to the approximation using the normalized version.
+
+## Possible Changes You May Want to Make:
+If you want to approximate to higher n, just change the self.max_calc_degree parameter in the OrthogonalPolyGUI classes init function.
