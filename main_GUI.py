@@ -4,7 +4,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 import numpy as np
-from backend import get_ortho_expressions, get_coef
+from backend import get_ortho_expressions
 from sympy import integrate, Symbol, factor, exp, oo, sin, pi, cos, Abs, sympify, lambdify, sqrt, powsimp
 import scipy.integrate as spi
 import os
@@ -43,7 +43,7 @@ class OrthogonalPolyGUI(tk.Tk):
         self.cache_lock = threading.Lock()
         self.basis_cache = self.load_cache()
         
-        self.max_calc_degree = 15
+        self.max_calc_degree = 10
         
         self.cached_func_str = ""
         self.cached_coefs = []
@@ -90,9 +90,9 @@ class OrthogonalPolyGUI(tk.Tk):
         """Quietly calculates the 4 standard bases in the background."""
         for basis_name, (a, b, sigma) in poly_base_params.items():
             # If it's not in the cache, or if we don't have enough polynomials...
-            if basis_name not in self.basis_cache or len(self.basis_cache[basis_name]) < self.max_calc_degree + 1:
+            if basis_name not in self.basis_cache:
                 print(f"[Background Task] Crunching Gram-Schmidt for {basis_name}...")
-                
+
                 polys = get_ortho_expressions(self.max_calc_degree + 1, a, b, sigma)
                 
                 with self.cache_lock:
@@ -100,8 +100,19 @@ class OrthogonalPolyGUI(tk.Tk):
                     
                 self.save_cache()
                 print(f"[Background Task] {basis_name} complete and saved!")
+
+            elif len(self.basis_cache[basis_name]) < self.max_calc_degree + 1:
+                print(f"[Background Task] Crunching More Gram-Schmidt for {basis_name}...")
                 
-        print("[Background Task] All standard bases are ready to go!")    
+                polys = get_ortho_expressions(self.max_calc_degree + 1, a, b, sigma, start=self.basis_cache[basis_name])
+                
+                with self.cache_lock:
+                    self.basis_cache[basis_name] = polys
+                    
+                self.save_cache()
+                print(f"[Background Task] {basis_name} complete and saved!")
+                
+        # print("[Background Task] All standard bases are ready to go!")    
 
     def create_widgets(self):
         # --- Control Panel (Left Side) ---
@@ -183,7 +194,7 @@ class OrthogonalPolyGUI(tk.Tk):
         slider_frame.pack(fill="x", pady=(0, 20))
         
         self.degree_slider = ttk.Scale(
-            slider_frame, from_=1, to=15, orient="horizontal",
+            slider_frame, from_=1, to=self.max_calc_degree, orient="horizontal",
             variable=self.degree_var, command=self.update_slider_label
         )
         self.degree_slider.pack(side="left", fill="x", expand=True)
@@ -380,7 +391,7 @@ class OrthogonalPolyGUI(tk.Tk):
         if cache_key not in self.basis_cache or len(self.basis_cache[cache_key]) < degree + 1:
             print(f"Pre-calculating {cache_key} polynomials up to n={self.max_calc_degree}...")
             
-            polys = get_ortho_expressions(self.max_calc_degree, a, b, sigma)
+            polys = get_ortho_expressions(self.max_calc_degree + 1, a, b, sigma)
             
             with self.cache_lock:
                 self.basis_cache[cache_key] = polys
@@ -493,9 +504,9 @@ class OrthogonalPolyGUI(tk.Tk):
         # ==========================================
         # ADD THE SHADED SAFE ZONE
         # ==========================================
-        # Safely convert SymPy infinities to NumPy infinities
-        a_val = -np.inf if a == -oo else (np.inf if a == oo else float(a))
-        b_val = -np.inf if b == -oo else (np.inf if b == oo else float(b))
+        # Matplotlib crashes on true infinity, so we use a massive finite number instead!
+        a_val = -1e9 if a == -oo else float(a)
+        b_val = 1e9 if b == oo else float(b)
 
         # axvspan draws a rectangle across the whole Y-axis between two X values
         self.ax.axvspan(a_val, b_val, color='gold', alpha=0.15, zorder=0, label="Integration Bounds")
